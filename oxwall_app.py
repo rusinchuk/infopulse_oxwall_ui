@@ -5,20 +5,42 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from custom_waits import present_of_elements_in_amount
+from page_objects import locators
+from page_objects.dashboard_page import DashboardPage
+from page_objects.main_page import MainPage
+from page_objects.sign_in_page import SignInPage
 
 
 class OxwallApp:
     """ Class for interaction with Oxwall web-interface"""
     def __init__(self, driver, base_url):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 5)
-        self.actions = ActionChains(driver)
         self.open(base_url)
+        self.main_page = MainPage(self.driver)
+        self.sign_in_page = SignInPage(self.driver)
+        self.dashboard_page = DashboardPage(self.driver)
+        # TODO other pages
 
     def open(self, base_url):
         """ Open Oxwall at a given url"""
         self.driver.get(base_url)
 
+
+
+
+    def login(self, username, password):
+        """ Login (Sign in) to Oxwall site using a given credential of user
+        :Args:
+        username - username of user
+        password - password of user
+        """
+        self.main_page.initiate_sigh_in()
+        self.sign_in_page.input_username(username)
+        self.sign_in_page.input_password(password)
+        self.sign_in_page.signin_click()
+        self.sign_in_page.wait_authentication()
+
+    # TODO: move to page objects
     def is_element_present(self, by, locator):
         """ Check that an element is present on current Oxwall page"""
         try:
@@ -27,34 +49,12 @@ class OxwallApp:
             return False
         return True
 
-    def login(self, username, password):
-        """ Login (Sign in) to Oxwall site using a given credential of user
-        :Args:
-        username - username of user
-        password - password of user
-        """
-        driver = self.driver
-        el_sign_in = driver.find_element(By.CLASS_NAME, "ow_signin_label")
-        el_sign_in.click()
-        el_login = driver.find_element(By.NAME, "identity")
-        el_login.clear()
-        el_login.send_keys(username)
-        el_password = driver.find_element(By.NAME, "password")
-        el_password.clear()
-        el_password.send_keys(password)
-        el_authentication = driver.find_element(By.CLASS_NAME, "ow_positive")
-        el_authentication.click()
-        self.wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "ow_console_dropdown_hover")),
-            message="Can't find visible user menu"
-        )
-
     def logout(self):
         """ Logout (Sign out) at Oxwall site """
         if self.is_element_present(By.CLASS_NAME, "ow_console_dropdown_hover"):
             el_user_menu = self.driver.find_element(By.CLASS_NAME, "ow_console_dropdown_hover")
-            self.actions.move_to_element(el_user_menu)
-            self.actions.perform()
+            self.main_page.actions.move_to_element(el_user_menu)
+            self.main_page.actions.perform()
             el_sign_out = self.driver.find_element(By.XPATH, "//a[contains(@href, 'sign-out')]")
             el_sign_out.click()
 
@@ -78,7 +78,7 @@ class OxwallApp:
          old_number - quantity of post before
          Returns a list of elements of posts located
          """
-        return self.wait.until(
+        return self.main_page.wait.until(
             present_of_elements_in_amount((By.CLASS_NAME, "ow_newsfeed_item"), old_number + 1),
             message=f"Can't find {old_number + 1} Post block "
         )
