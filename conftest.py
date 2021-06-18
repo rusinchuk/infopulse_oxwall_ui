@@ -3,12 +3,12 @@ from selenium import webdriver
 from oxwall_app import OxwallApp
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def driver():
     # Open site
     driver = webdriver.Chrome(executable_path=r"C:\Selenium\chromedriver_win32\chromedriver.exe")
-    return driver
-
+    yield driver
+    driver.quit()
 
 @pytest.fixture()
 def app(driver):
