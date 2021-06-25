@@ -1,0 +1,20 @@
+[
+    {
+        "username": "test11",
+        "password": "test",
+        "real_name": "Tester Tester",
+        "email": "test10@test.com",
+        "gender": 1,
+        "birthday": "1986-01-16",
+        "is_admin": false
+    },
+    {
+        "username": "test19",
+        "password": "secret",
+        "real_name": "Tester",
+        "email": "test9@test.com",
+        "gender": 2,
+        "birthday": "1986-01-16",
+        "is_admin": false
+    }
+]
