@@ -1,5 +1,5 @@
 from page_objects.locators import PostLocator
-from user_object import User
+from value_objects.user_object import User
 
 
 class PostBlock:
