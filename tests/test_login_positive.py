@@ -1,3 +1,8 @@
+import pytest
+
+
+@pytest.mark.smoke
+@pytest.mark.nondestructive
 def test_login(driver, app, user):
     app.main_page.initiate_sigh_in()
     assert app.sign_in_page.is_this_page()
@@ -8,3 +13,8 @@ def test_login(driver, app, user):
     assert app.dashboard_page.active_menu.text == "DASHBOARD"
     assert app.dashboard_page.is_this_page()
 
+
+def test_registration(app):
+    app.main_page.initiate_sigh_up()
+    app.join_page
+    
