@@ -1,0 +1,14 @@
+{
+  "db": {
+    "host": "localhost",
+    "user": "root",
+    "password": "mysql",
+    "db": "oxwall1"
+  },
+  "admin":{
+    "username": "demo",
+    "password": "demo",
+    "email": "admin@127.0.0.1",
+    "real_name": "Demo"
+  }
+}
