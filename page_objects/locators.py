@@ -41,3 +41,6 @@ class PostLocator:
     COMMENTS_COUNTER = (By.CLASS_NAME, 'newsfeed_counter_comments')
     COMMENTS_BUTTON = ()
 
+
+class JoinPageLocators:
+    pass
