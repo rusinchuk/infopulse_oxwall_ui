@@ -11,11 +11,17 @@ class InternalPage(BasePage):
     def user_menu(self):
         return self.find_element(InternalPagesLocators.USER_MENU)
 
+    @property
+    def sing_up(self):
+        return self.find_element(InternalPagesLocators.SIGN_UP)
 
     def initiate_sigh_in(self):
         """ Initiate Sign in (click to Sign in menu) """
         el_sign_in = self.find_element(InternalPagesLocators.SIGN_IN)
         el_sign_in.click()
+
+    def initiate_sigh_up(self):
+        pass
 
     def logout(self):
         """ Logout (Sign out) at Oxwall site """
