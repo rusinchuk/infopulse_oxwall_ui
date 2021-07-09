@@ -12,6 +12,9 @@ with open(file_name, encoding="utf8") as f:
 for _ in range(3):
     input_data.append(random_string2(cyr=True, spaces=True))
 
+input_data[0] = pytest.param(input_data[0], marks=pytest.mark.smoke, id=input_data[0])
+print(input_data)
+
 # @pytest.mark.parametrize("input_text", input_data)
 # def test_post_create(app, login_user, input_text):
 #     old_number = len(app.posts())
@@ -21,7 +24,7 @@ for _ in range(3):
 #     assert input_text in post_blocks[0].text
 
 
-@pytest.mark.parametrize("input_text", input_data, ids=input_data)
+@pytest.mark.parametrize("input_text", input_data)
 def test_post_create2(app, login_user, input_text, db, delete_post):
     old_number = len(app.dashboard_page.posts)
     app.dashboard_page.create_post(input_text)
