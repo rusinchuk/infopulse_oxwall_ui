@@ -1,6 +1,6 @@
 import json
-
 import pytest
+import configparser
 
 from db.user_connector import OxwallDB
 from page_objects.oxwall_app import OxwallApp
@@ -9,6 +9,26 @@ import os.path
 
 PROJECT_DIR = os.path.dirname(__file__)
 
+
+def pytest_addoption(parser):
+    parser.addoption("--config", action="store", default="config.json",
+                     help="project config file name")
+
+
+@pytest.fixture(scope="session")
+def config(request):
+    filename = request.config.getoption("--config")
+    with open(os.path.join(PROJECT_DIR, filename)) as f:
+        return json.load(f)
+
+
+@pytest.fixture(scope="session")
+def config_ini(request):
+    filename = request.config.getoption("--config")
+    conf = configparser.ConfigParser()
+    with open(os.path.join(PROJECT_DIR, filename)) as f:
+        conf.read_file(f)
+    return conf
 
 @pytest.fixture()
 def driver(selenium):
@@ -20,28 +40,33 @@ def driver(selenium):
 
 
 @pytest.fixture()
-def app(driver):
-    base_url = "http://127.0.0.1/oxwall/"
+def app(driver, base_url):
+    # base_url = "http://127.0.0.1/oxwall/"
     return OxwallApp(driver, base_url)
 
 
 @pytest.fixture()
-def login_user(app):
-    user = User(username="admin", password="pass", real_name="Admin")
+def admin(config):
+    return User(**config["admin"])
+
+
+@pytest.fixture()
+def login_user(app, admin):
+    user = admin
     app.login(user.username, user.password)
     yield user
     app.logout()
 
 
+@pytest.fixture()
+def logout(app):
+    yield
+    app.logout()
+
+
 @pytest.fixture(scope="session")
-def db():
-    param = {
-        "host": 'localhost',
-        "user": 'root',
-        "password": 'mysql',
-        "db": 'oxwall1'
-    }
-    db = OxwallDB(**param)
+def db(config):
+    db = OxwallDB(**config["db"])
     yield db
     db.close()
 
